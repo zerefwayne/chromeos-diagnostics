@@ -1,4 +1,4 @@
-const REFRESH_TIME = 3000;
+const REFRESH_TIME = 2000;
 const PWA_TAB_TITLE = "diagnostics-app";
 
 const fetchProcessorUsage = () => {
@@ -50,11 +50,23 @@ const fetchTargetTabIds = () => {
   });
 };
 
-setInterval(async () => {
-  const data = await fetchData();
-  console.log(data);
-
+const sendMetrics = async () => {
   let targetTabs = await fetchTargetTabIds();
   targetTabs = targetTabs.map(tab => tab.id);
-  console.log(targetTabs);
+  if (targetTabs.length === 0) {
+    console.log("pwa not open");
+    return;
+  }
+  const data = await fetchData();
+  targetTabs.forEach((tabID) => {
+    chrome.tabs.sendMessage(tabID, { greeting: "hello" }, function (response) {
+      console.log(response.farewell);
+    });
+  });
+  console.log(targetTabs, data);
+};
+
+
+setInterval(async () => {
+  sendMetrics();
 }, REFRESH_TIME);

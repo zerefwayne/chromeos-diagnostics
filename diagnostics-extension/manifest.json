@@ -17,5 +17,8 @@
     "system.storage",
     "system.memory",
     "tabs"
-  ]
+  ],
+  "externally_connectable": {
+    "matches": ["*://localhost/*"]
+  }
 }
