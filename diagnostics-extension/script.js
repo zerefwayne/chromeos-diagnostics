@@ -50,8 +50,6 @@ const fetchTargetTabIds = () => {
   });
 };
 
-console.log(fetchTabID());
-
 setInterval(async () => {
   const data = await fetchData();
   console.log(data);
