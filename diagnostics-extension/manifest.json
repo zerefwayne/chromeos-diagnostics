@@ -16,5 +16,11 @@
     "32": "images/favicon-32x32.png",
     "48": "images/android-icon-48x48.png",
     "128": "images/apple-icon-120x120.png"
+  },
+  "background": {
+    "scripts": [
+      "script.js"
+    ],
+    "persistent": true
   }
 }
