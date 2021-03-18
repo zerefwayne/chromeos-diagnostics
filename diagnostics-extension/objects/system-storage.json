@@ -1,0 +1,14 @@
+[
+  {
+      "capacity": 272629760,
+      "id": "e62d8220-dbe8-4825-8f0a-3487d311e4b8",
+      "name": "SYSTEM",
+      "type": "fixed"
+  },
+  {
+      "capacity": 199313326080,
+      "id": "72c52c73-feb4-4cd4-ba4e-ebaa3be3e500",
+      "name": "/",
+      "type": "fixed"
+  }
+]

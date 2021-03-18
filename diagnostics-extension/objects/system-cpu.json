@@ -1,0 +1,82 @@
+{
+    "archName": "x86_64",
+    "features": [
+        "mmx",
+        "sse",
+        "sse2",
+        "sse3",
+        "ssse3",
+        "sse4_1",
+        "sse4_2",
+        "avx"
+    ],
+    "modelName": "Intel(R) Core(TM) i5-8250U CPU @ 1.60GHz",
+    "numOfProcessors": 8,
+    "processors": [
+        {
+            "usage": {
+                "idle": 2507423,
+                "kernel": 80354,
+                "total": 3005377,
+                "user": 417600
+            }
+        },
+        {
+            "usage": {
+                "idle": 1495640,
+                "kernel": 78696,
+                "total": 1991315,
+                "user": 416979
+            }
+        },
+        {
+            "usage": {
+                "idle": 1490710,
+                "kernel": 85372,
+                "total": 1991143,
+                "user": 415061
+            }
+        },
+        {
+            "usage": {
+                "idle": 1477927,
+                "kernel": 104862,
+                "total": 1992753,
+                "user": 409964
+            }
+        },
+        {
+            "usage": {
+                "idle": 1487098,
+                "kernel": 92072,
+                "total": 1986948,
+                "user": 407778
+            }
+        },
+        {
+            "usage": {
+                "idle": 1491487,
+                "kernel": 82989,
+                "total": 1989267,
+                "user": 414791
+            }
+        },
+        {
+            "usage": {
+                "idle": 1493714,
+                "kernel": 87973,
+                "total": 1990257,
+                "user": 408570
+            }
+        },
+        {
+            "usage": {
+                "idle": 1487124,
+                "kernel": 87147,
+                "total": 1991952,
+                "user": 417681
+            }
+        }
+    ],
+    "temperatures": []
+}
