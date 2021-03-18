@@ -1,7 +1,11 @@
 <template>
   <div id="app">
     <div id="app-container">
-      <div id="app-sidebar">Sidebar</div>
+      <div id="app-sidebar">
+        <div id="app-branding">
+          <img src="./assets/logo.png" alt="ChromeOS Diagnostics" height="35%" />
+        </div>
+      </div>
       <div id="app-router">
         <router-view />
       </div>
@@ -11,12 +15,12 @@
 
 <style lang="scss">
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-family: 'Roboto', Avenir, Helvetica, Arial, sans-serif;
   color: white;
   background-color: #272b2f;
   height: 100vh;
   width: 100%;
-  padding: 4em;
+  padding: 3em;
 }
 
 #app-container {
@@ -42,6 +46,13 @@
   display: flex;
   flex-direction: column;
   padding: 1em 2em;
+}
+
+#app-branding {
+  height: 6em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 #nav {
