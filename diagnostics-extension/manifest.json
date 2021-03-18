@@ -2,5 +2,19 @@
   "name": "ChromeOS Diagnostics",
   "version": "0.1",
   "description": "The helper extension for the ChromeOS Diagnostics PWA.",
-  "manifest_version": 2
+  "manifest_version": 2,
+  "page_action": {
+    "default_icon": {
+      "16": "images/favicon-16x16.png",
+      "32": "images/favicon-32x32.png",
+      "48": "images/android-icon-48x48.png",
+      "128": "images/apple-icon-120x120.png"
+    }
+  },
+  "icons": {
+    "16": "images/favicon-16x16.png",
+    "32": "images/favicon-32x32.png",
+    "48": "images/android-icon-48x48.png",
+    "128": "images/apple-icon-120x120.png"
+  }
 }
