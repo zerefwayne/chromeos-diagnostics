@@ -64,11 +64,6 @@ export default Vue.extend({
       ],
     };
   },
-  methods: {
-    getImage(url: string) {
-      return require(url);
-    },
-  },
 });
 </script>
 

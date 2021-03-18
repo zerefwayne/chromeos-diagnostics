@@ -66,7 +66,8 @@ const sendMetrics = async () => {
   console.log(targetTabs, data);
 };
 
-
-setInterval(async () => {
-  sendMetrics();
-}, REFRESH_TIME);
+chrome.runtime.onMessageExternal.addListener(async function(request, sender, sendResponse) {
+  console.log(request, sender);
+  const data = await fetchData();
+  sendResponse(data);
+});
