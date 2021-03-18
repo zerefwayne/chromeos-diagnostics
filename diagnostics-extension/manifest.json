@@ -1,0 +1,6 @@
+{
+  "name": "ChromeOS Diagnostics",
+  "version": "0.1",
+  "description": "The helper extension for the ChromeOS Diagnostics PWA.",
+  "manifest_version": 2
+}
