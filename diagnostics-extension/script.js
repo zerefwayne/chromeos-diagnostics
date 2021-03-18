@@ -1,4 +1,5 @@
-const REFRESH_TIME = 1000;
+const REFRESH_TIME = 3000;
+const PWA_TAB_TITLE = "diagnostics-app";
 
 const fetchProcessorUsage = () => {
   return new Promise((resolve, reject) => {
@@ -39,7 +40,23 @@ const fetchData = () => {
   });
 };
 
+const fetchTargetTabIds = () => {
+  return new Promise((resolve, reject) => {
+    chrome.tabs.query({ active: true }, (tabs) => {
+      resolve(tabs.filter((tab) => {
+        return tab.title === PWA_TAB_TITLE;
+      }));
+    });
+  });
+};
+
+console.log(fetchTabID());
+
 setInterval(async () => {
   const data = await fetchData();
   console.log(data);
+
+  let targetTabs = await fetchTargetTabIds();
+  targetTabs = targetTabs.map(tab => tab.id);
+  console.log(targetTabs);
 }, REFRESH_TIME);
