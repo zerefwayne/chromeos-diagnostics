@@ -5,8 +5,19 @@
       Last Updated:
       {{ lastUpdated ? toLastUpdated() : "Fetching latest data..." }}
     </p>
+    <p>
+      Update Interval:
+      <select v-model="interval" @change="handleIntervalChange($event)">
+        <option :value="500">.5 second</option>
+        <option :value="1000">1 second</option>
+        <option :value="5000">5 seconds</option>
+        <option :value="10000">10 seconds</option>
+        <option :value="30000">30 seconds</option>
+        <option :value="60000">60 seconds</option>
+      </select>
+    </p>
     <div class="metric-card">
-      <p class="heading">MEMORY</p>
+      <p class="heading"><img src="@/assets/icons/ram.svg" /> MEMORY</p>
       <div class="body">
         <div class="info">
           <p class="value-xl mb-0">
@@ -21,14 +32,14 @@
           <line-chart
             v-if="lastUpdated !== null"
             :chart-data="memoryGraphData"
-            :height="100"
+            :height="200"
             :options="memoryOptions"
           ></line-chart>
         </div>
       </div>
     </div>
     <div class="metric-card cpu">
-      <p class="heading">CPU</p>
+      <p class="heading"><img src="@/assets/icons/cpu.svg" /> CPU</p>
       <div class="body">
         <div class="info">
           <ul style="list-style: none; margin-top: 0.5rem">
@@ -76,6 +87,7 @@ export default Vue.extend({
     return {
       interval: 1000,
       cpu: {},
+      fetchInterval: 0,
       memory: {},
       storage: {},
       lastUpdated: null,
@@ -100,7 +112,7 @@ export default Vue.extend({
                 beginAtZero: true,
                 fontColor: "white",
                 min: 0,
-                max: 100
+                max: 100,
               },
               gridLines: {
                 display: true,
@@ -129,8 +141,8 @@ export default Vue.extend({
         },
         scales: {
           scaleLabel: {
-                fontColor: "white"
-              },
+            fontColor: "white",
+          },
           yAxes: [
             {
               ticks: {
@@ -139,7 +151,6 @@ export default Vue.extend({
               gridLines: {
                 display: true,
               },
-              
             },
           ],
           xAxes: [
@@ -156,7 +167,7 @@ export default Vue.extend({
           position: "right",
           labels: {
             fontColor: "white",
-            boxWidth: 15
+            boxWidth: 15,
           },
         },
         responsive: true,
@@ -165,6 +176,24 @@ export default Vue.extend({
     };
   },
   methods: {
+    handleIntervalChange(e: Event) {
+      clearInterval(this.fetchInterval);
+      this.fetchInterval = setInterval(() => {
+        this.updateData();
+      }, this.interval);
+    },
+    async updateData() {
+      const data = await this.fetchMetrics();
+      console.log(data);
+      this.memory = data["memory"];
+      this.storage = data["storage"];
+      this.cpu = data["cpu"];
+      if (this.lastUpdated === null) {
+        this.initalizeCPUGraphData();
+      }
+      this.lastUpdated = data["time"];
+      this.pushCPUData();
+    },
     fetchMetrics() {
       return new Promise((resolve, reject) => {
         const EXTENSION_ID = process.env.VUE_APP_EXTENSION_ID;
@@ -205,11 +234,18 @@ export default Vue.extend({
     },
     pushCPUData() {
       let labels = this.cpugraphdata.labels;
+
+      if (labels.length > 50) {
+        labels.shift();
+      }
       labels.push(labels.length + 1);
 
       this.cpu.processors.forEach((processor: any, index: number) => {
         let usage = this.calculateUsagePercentage(processor.usage);
         // console.log(index, usage, processor);
+        if (this.dummyDatasets[index].data.length > 50) {
+          this.dummyDatasets[index].data.shift();
+        }
         this.dummyDatasets[index].data.push(usage);
         // console.log(index, this.cpugraphdata.datasets[index].data.length);
       });
@@ -219,6 +255,9 @@ export default Vue.extend({
       };
 
       let dummyMemoryData = { ...this.memoryGraphData.datasets[0] };
+      if (dummyMemoryData.data.length > 50) {
+        dummyMemoryData.data.shift();
+      }
       dummyMemoryData.data.push(this.processMemoryUsage()["usedPercentage"]);
       this.memoryGraphData = {
         labels,
@@ -247,6 +286,7 @@ export default Vue.extend({
           fill: false,
           pointRadius: 0,
           lineTension: 0,
+          borderWidth: 1,
         };
         this.dummyDatasets.push(dataset);
       });
@@ -260,22 +300,14 @@ export default Vue.extend({
           fill: false,
           pointRadius: 0,
           lineTension: 0,
+          borderWidth: 1,
         },
       ];
     },
   },
   mounted() {
-    setInterval(async () => {
-      const data = await this.fetchMetrics();
-      console.log(data);
-      this.memory = data["memory"];
-      this.storage = data["storage"];
-      this.cpu = data["cpu"];
-      if (this.lastUpdated === null) {
-        this.initalizeCPUGraphData();
-      }
-      this.lastUpdated = data["time"];
-      this.pushCPUData();
+    this.fetchInterval = setInterval(async () => {
+      this.updateData();
     }, this.interval);
   },
   watch: {
@@ -328,7 +360,13 @@ export default Vue.extend({
     font-family: "Nunito";
     font-size: 1.1em;
     font-weight: bold;
-    margin-bottom: 0.5em;
+    margin-bottom: 0.8rem;
+    display: flex;
+    align-items: center;
+
+    img {
+      margin-right: 0.5rem;
+    }
   }
 
   .value-xl {
