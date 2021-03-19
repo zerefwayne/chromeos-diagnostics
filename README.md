@@ -2,7 +2,7 @@
 
 This Progressive-Web-App along with the Chrome extension allows user to monitor telemetric data about the system.
 
-**Current Progress: All 3 milestones completed.**
+** :heavy_check_mark: Current Progress: All 3 milestones completed.**
 
 The code after each milestone can be found in the branch with name `milestone-#`.
 
@@ -10,10 +10,11 @@ The code after each milestone can be found in the branch with name `milestone-#`
 
 ![screencapture-localhost-8080-2021-03-19-12_51_55](https://user-images.githubusercontent.com/28949397/111744898-ee16e980-88b1-11eb-89f7-80fe4408e3dd.png)
 
-
-[Video Demo](https://user-images.githubusercontent.com/28949397/111744224-e73ba700-88b0-11eb-9311-60ade931fdc9.mp4)
+[Video Demo](https://user-images.githubusercontent.com/28949397/111750962-e6f3d980-88b9-11eb-993b-07cf3950c2fb.mp4)
 
 ## How to use?
+
+:warning: To run this app, please follow `Build from source` instructions as the extension hasn't been published on Chrome Store yet.
 
 ### Installing the PWA
 
