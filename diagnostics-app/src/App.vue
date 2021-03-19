@@ -26,7 +26,9 @@
         </div>
       </div>
       <div id="app-router">
-        <router-view />
+        <transition name="fade">
+          <router-view />
+        </transition>
       </div>
     </div>
   </div>
@@ -39,7 +41,7 @@ import DataIcon from "@/assets/icons/data-light.svg";
 import DiagIcon from "@/assets/icons/diag-light.svg";
 import StateIcon from "@/assets/icons/state-light.svg";
 
-import 'bootstrap/dist/css/bootstrap.min.css';
+import "bootstrap/dist/css/bootstrap.min.css";
 
 export default Vue.extend({
   data() {
@@ -70,6 +72,21 @@ export default Vue.extend({
 </script>
 
 <style lang="scss">
+.fade-enter-active,
+.fade-leave-active {
+  transition-property: opacity;
+  transition-duration: 0.2s;
+}
+
+.fade-enter-active {
+  transition-delay: 0.2s;
+}
+
+.fade-enter,
+.fade-leave-active {
+  opacity: 0;
+}
+
 #app {
   font-family: "Roboto", Avenir, Helvetica, Arial, sans-serif;
   color: white;
