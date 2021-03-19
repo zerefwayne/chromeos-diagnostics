@@ -74,10 +74,15 @@
   </div>
 </template>
 
-<script lang="ts">
+<script lang="js">
+/* eslint-disable */
 import Vue from "vue";
 import moment from "moment";
 import LineChart from "@/components/lineChart";
+
+import memoryOptions from '../config/memory-graph';
+import cpuOptions from '../config/cpu-graph';
+import graphColors from '../config/graph-colors';
 
 export default Vue.extend({
   components: {
@@ -100,83 +105,12 @@ export default Vue.extend({
         labels: [],
         datasets: [],
       },
-      memoryOptions: {
-        //Chart.js options
-        animation: {
-          duration: 3,
-        },
-        scales: {
-          yAxes: [
-            {
-              ticks: {
-                beginAtZero: true,
-                fontColor: "white",
-                min: 0,
-                max: 100,
-              },
-              gridLines: {
-                display: true,
-              },
-            },
-          ],
-          xAxes: [
-            {
-              display: false,
-              gridLines: {
-                display: false,
-              },
-            },
-          ],
-        },
-        legend: {
-          display: false,
-        },
-        responsive: true,
-        maintainAspectRatio: false,
-      },
-      cpuOptions: {
-        //Chart.js options
-        animation: {
-          duration: 3,
-        },
-        scales: {
-          scaleLabel: {
-            fontColor: "white",
-          },
-          yAxes: [
-            {
-              ticks: {
-                beginAtZero: false,
-              },
-              gridLines: {
-                display: true,
-              },
-            },
-          ],
-          xAxes: [
-            {
-              display: false,
-              gridLines: {
-                display: false,
-              },
-            },
-          ],
-        },
-        legend: {
-          display: true,
-          position: "right",
-          labels: {
-            fontColor: "white",
-            boxWidth: 15,
-          },
-        },
-        responsive: true,
-        maintainAspectRatio: false,
-      },
+      memoryOptions: memoryOptions,
+      cpuOptions: cpuOptions
     };
   },
   methods: {
-    handleIntervalChange(e: Event) {
+    handleIntervalChange(e) {
       clearInterval(this.fetchInterval);
       this.fetchInterval = setInterval(() => {
         this.updateData();
@@ -200,13 +134,13 @@ export default Vue.extend({
         window.chrome.runtime.sendMessage(
           EXTENSION_ID,
           { type: "SEND_METRICS" },
-          function (response: any) {
+          function (response) {
             resolve(response);
           }
         );
       });
     },
-    toGB(bytes: number) {
+    toGB(bytes) {
       return Number.parseFloat((bytes / 1000000000).toFixed(2));
     },
     toLastUpdated() {
@@ -221,13 +155,13 @@ export default Vue.extend({
       total = this.toGB(total);
       return { used, usedPercentage, total };
     },
-    calculateUsagePercentage(data: any) {
+    calculateUsagePercentage(data) {
       let utilization = (1 - data["idle"] / data["total"]) * 100;
       return Number.parseFloat(utilization.toFixed(2));
     },
     processCPUUsage() {
       let usages = [];
-      this.cpu.processors.forEach((processor: any) => {
+      this.cpu.processors.forEach((processor) => {
         usages.push(this.calculateUsagePercentage(processor.usage));
       });
       return usages;
@@ -240,7 +174,7 @@ export default Vue.extend({
       }
       labels.push(labels.length + 1);
 
-      this.cpu.processors.forEach((processor: any, index: number) => {
+      this.cpu.processors.forEach((processor, index) => {
         let usage = this.calculateUsagePercentage(processor.usage);
         // console.log(index, usage, processor);
         if (this.dummyDatasets[index].data.length > 50) {
@@ -263,21 +197,10 @@ export default Vue.extend({
         labels,
         datasets: [dummyMemoryData],
       };
-
-      // console.log("PUSHED NEW DATA", this.cpugraphdata);
     },
     initalizeCPUGraphData() {
-      let colors = [
-        "#FF9172",
-        "#386BD7",
-        "#42BAFE",
-        "#92B2F0",
-        "#D9D9D9",
-        "#0052CC",
-        "#FFFFFF",
-        "#C4C4C4",
-      ];
-      this.cpu.processors.forEach((processor: any, index: number) => {
+      let colors = graphColors;
+      this.cpu.processors.forEach((processor, index) => {
         const usage = processor["usage"];
         let dataset = {
           data: [],
@@ -309,11 +232,6 @@ export default Vue.extend({
     this.fetchInterval = setInterval(async () => {
       this.updateData();
     }, this.interval);
-  },
-  watch: {
-    chartData() {
-      this.$data._chart.update();
-    },
   },
 });
 </script>
