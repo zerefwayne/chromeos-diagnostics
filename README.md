@@ -6,10 +6,10 @@ This Progressive-Web-App along with the Chrome extension allows user to monitor 
 
 ## Demo
 
+![screencapture-localhost-8080-2021-03-19-12_51_55](https://user-images.githubusercontent.com/28949397/111744898-ee16e980-88b1-11eb-89f7-80fe4408e3dd.png)
 
-https://user-images.githubusercontent.com/28949397/111744224-e73ba700-88b0-11eb-9311-60ade931fdc9.mp4
 
-
+[Video Demo](https://user-images.githubusercontent.com/28949397/111744224-e73ba700-88b0-11eb-9311-60ade931fdc9.mp4)
 
 ## How to use?
 
@@ -31,9 +31,14 @@ The PWA can be accessed on https://diagchrome.netlify.app. To install it on your
 
 #### Download from Chrome Store
 
+The extension is yet to be published.
+
 #### Build from Source
+
+Prerequisite: Build the website from source instead of netlify link.
 
 1. Clone this repository/download as a ZIP on your local system.
 2. Head over to `chrome://extensions` and enable `Developer Mode` on the top right menu.
 3. Now click on `Load Unpacked` and select the `diagnostics-extension` directory. This will load and start the extension on the device.
+4. **ADDITIONAL STEP**: Installing an extension locally changes the extension ID by which the PWA identifies it. In the `chrome://extensions` dashboard, locate the ID of ChromeOS Diagnostics extension that was just installed. Headover to `diagnostics-app` directory and locate `src/.env`. Replace the extensionID with the new ID to make it work. Make sure to restart the frontend server after changing this.
 
