@@ -6,12 +6,45 @@
       {{ lastUpdated ? toLastUpdated() : "Fetching latest data..." }}
     </p>
     <div class="metric-card">
-      <p class="heading">RAM</p>
-      <p class="value-xl">
-        {{ toGB(memory.capacity - memory.availableCapacity) }}/{{
-          toGB(memory.capacity)
-        }}<span class="unit">GB</span>
-      </p>
+      <p class="heading">MEMORY</p>
+      <div class="body">
+        <div class="info">
+          <p class="value-xl">
+            {{ processMemoryUsage()["used"] }}/{{ processMemoryUsage()["total"]
+            }}<span class="unit">GB</span>
+          </p>
+          <p style="margin-top: 0.5rem; font-size: 1.2rem">
+            {{ processMemoryUsage()["usedPercentage"] }}%
+          </p>
+        </div>
+        <div class="graph"></div>
+      </div>
+    </div>
+    <div class="metric-card">
+      <p class="heading">CPU</p>
+      <div class="body">
+        <div class="info">
+          <ul style="list-style: none; margin-top: 0.5rem">
+            <li><b>Model Name:</b> {{ cpu["modelName"] }}</li>
+            <li style="margin-top: 0.4rem">
+              <b>Architecture:</b> {{ cpu["archName"] }}
+            </li>
+            <li style="margin-top: 0.4rem">
+              <b>Number of Cores:</b> {{ cpu["numOfProcessors"] }}
+            </li>
+          </ul>
+          <div class="row m-0">
+            <div
+              v-for="(usage, index) in processCPUUsage()"
+              :key="'cpu' + index"
+              class="col col-md-3 mt-2 px-0"
+            >
+              CPU 1: {{ usage }}%
+            </div>
+          </div>
+        </div>
+        <div class="graph"></div>
+      </div>
     </div>
   </div>
 </template>
@@ -44,10 +77,32 @@ export default Vue.extend({
       });
     },
     toGB(bytes: number) {
-      return (bytes / 1000000000).toFixed(2);
+      return Number.parseFloat((bytes / 1000000000).toFixed(2));
     },
     toLastUpdated() {
       return moment(this.lastUpdated).format("MMMM Do YYYY, h:mm:ss a");
+    },
+    processMemoryUsage() {
+      let used = this.memory.capacity - this.memory.availableCapacity;
+      let total = this.memory.capacity;
+      let usedPercentage = Number.parseFloat(((used * 100) / total).toFixed(2));
+
+      used = this.toGB(used);
+      total = this.toGB(total);
+      return { used, usedPercentage, total };
+    },
+    calculateUsagePercentage(data: any) {
+      console.log(data);
+      let utilization = (1 - data["idle"] / data["total"])*100;
+      console.log(data["idle"], data["total"], utilization);
+      return Number.parseFloat(utilization.toFixed(2));
+    },
+    processCPUUsage() {
+      let usages = [];
+      this.cpu.processors.forEach((processor: any) => {
+        usages.push(this.calculateUsagePercentage(processor.usage));
+      });
+      return usages;
     },
   },
   mounted() {
@@ -69,6 +124,21 @@ export default Vue.extend({
   margin-top: 2em;
   padding: 1em 2em;
   border-radius: 0.5em;
+  display: flex;
+  flex-direction: column;
+
+  .body {
+    display: flex;
+  }
+
+  .info {
+    flex: 1;
+  }
+
+  .graph {
+    flex: 0 0 50%;
+    background-color: #3664c4;
+  }
 
   .heading {
     font-family: "Nunito";

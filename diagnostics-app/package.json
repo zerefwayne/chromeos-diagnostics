@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@types/moment": "^2.13.0",
+    "bootstrap": "^4.6.0",
     "core-js": "^3.6.5",
     "moment": "^2.29.1",
     "register-service-worker": "^1.7.1",

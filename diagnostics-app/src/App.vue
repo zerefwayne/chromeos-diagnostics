@@ -39,6 +39,8 @@ import DataIcon from "@/assets/icons/data-light.svg";
 import DiagIcon from "@/assets/icons/diag-light.svg";
 import StateIcon from "@/assets/icons/state-light.svg";
 
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 export default Vue.extend({
   data() {
     return {
@@ -135,6 +137,7 @@ export default Vue.extend({
 
     p {
       text-align: center;
+      margin-bottom: 0;
     }
 
     img {
