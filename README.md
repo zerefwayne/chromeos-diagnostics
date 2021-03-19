@@ -4,6 +4,8 @@ This Progressive-Web-App along with the Chrome extension allows user to monitor 
 
 **Current Progress: All 3 milestones completed.**
 
+The code after each milestone can be found in the branch with name `milestone-#`.
+
 ## Demo
 
 ![screencapture-localhost-8080-2021-03-19-12_51_55](https://user-images.githubusercontent.com/28949397/111744898-ee16e980-88b1-11eb-89f7-80fe4408e3dd.png)
