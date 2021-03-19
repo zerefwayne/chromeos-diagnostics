@@ -42,3 +42,8 @@ Prerequisite: Build the website from source instead of netlify link.
 3. Now click on `Load Unpacked` and select the `diagnostics-extension` directory. This will load and start the extension on the device.
 4. **ADDITIONAL STEP**: Installing an extension locally changes the extension ID by which the PWA identifies it. In the `chrome://extensions` dashboard, locate the ID of ChromeOS Diagnostics extension that was just installed. Headover to `diagnostics-app` directory and locate `src/.env`. Replace the extensionID with the new ID to make it work. Make sure to restart the frontend server after changing this.
 
+## Tech Stack
+
+1. VueJS framework for building the PWA.
+2. Chrome Extension for monitoring telemetry data.
+
