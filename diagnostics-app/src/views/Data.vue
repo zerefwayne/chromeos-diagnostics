@@ -9,18 +9,25 @@
       <p class="heading">MEMORY</p>
       <div class="body">
         <div class="info">
-          <p class="value-xl">
+          <p class="value-xl mb-0">
             {{ processMemoryUsage()["used"] }}/{{ processMemoryUsage()["total"]
             }}<span class="unit">GB</span>
           </p>
-          <p style="margin-top: 0.5rem; font-size: 1.2rem">
+          <p style="font-size: 1.2rem">
             {{ processMemoryUsage()["usedPercentage"] }}%
           </p>
         </div>
-        <div class="graph"></div>
+        <div class="graph">
+          <line-chart
+            v-if="lastUpdated !== null"
+            :chart-data="memoryGraphData"
+            :height="100"
+            :options="memoryOptions"
+          ></line-chart>
+        </div>
       </div>
     </div>
-    <div class="metric-card">
+    <div class="metric-card cpu">
       <p class="heading">CPU</p>
       <div class="body">
         <div class="info">
@@ -39,11 +46,18 @@
               :key="'cpu' + index"
               class="col col-md-3 mt-2 px-0"
             >
-              CPU 1: {{ usage }}%
+              CPU {{ index + 1 }}: {{ usage }}%
             </div>
           </div>
         </div>
-        <div class="graph"></div>
+        <div class="graph py-3">
+          <line-chart
+            v-if="lastUpdated !== null"
+            :chart-data="cpugraphdata"
+            :height="250"
+            :options="cpuOptions"
+          ></line-chart>
+        </div>
       </div>
     </div>
   </div>
@@ -52,8 +66,12 @@
 <script lang="ts">
 import Vue from "vue";
 import moment from "moment";
+import LineChart from "@/components/lineChart";
 
 export default Vue.extend({
+  components: {
+    LineChart,
+  },
   data() {
     return {
       interval: 1000,
@@ -61,6 +79,89 @@ export default Vue.extend({
       memory: {},
       storage: {},
       lastUpdated: null,
+      cpugraphdata: {
+        labels: [],
+        datasets: [],
+      },
+      dummyDatasets: [],
+      memoryGraphData: {
+        labels: [],
+        datasets: [],
+      },
+      memoryOptions: {
+        //Chart.js options
+        animation: {
+          duration: 3,
+        },
+        scales: {
+          yAxes: [
+            {
+              ticks: {
+                beginAtZero: true,
+                fontColor: "white",
+                min: 0,
+                max: 100
+              },
+              gridLines: {
+                display: true,
+              },
+            },
+          ],
+          xAxes: [
+            {
+              display: false,
+              gridLines: {
+                display: false,
+              },
+            },
+          ],
+        },
+        legend: {
+          display: false,
+        },
+        responsive: true,
+        maintainAspectRatio: false,
+      },
+      cpuOptions: {
+        //Chart.js options
+        animation: {
+          duration: 3,
+        },
+        scales: {
+          scaleLabel: {
+                fontColor: "white"
+              },
+          yAxes: [
+            {
+              ticks: {
+                beginAtZero: false,
+              },
+              gridLines: {
+                display: true,
+              },
+              
+            },
+          ],
+          xAxes: [
+            {
+              display: false,
+              gridLines: {
+                display: false,
+              },
+            },
+          ],
+        },
+        legend: {
+          display: true,
+          position: "right",
+          labels: {
+            fontColor: "white",
+            boxWidth: 15
+          },
+        },
+        responsive: true,
+        maintainAspectRatio: false,
+      },
     };
   },
   methods: {
@@ -92,9 +193,7 @@ export default Vue.extend({
       return { used, usedPercentage, total };
     },
     calculateUsagePercentage(data: any) {
-      console.log(data);
-      let utilization = (1 - data["idle"] / data["total"])*100;
-      console.log(data["idle"], data["total"], utilization);
+      let utilization = (1 - data["idle"] / data["total"]) * 100;
       return Number.parseFloat(utilization.toFixed(2));
     },
     processCPUUsage() {
@@ -104,6 +203,66 @@ export default Vue.extend({
       });
       return usages;
     },
+    pushCPUData() {
+      let labels = this.cpugraphdata.labels;
+      labels.push(labels.length + 1);
+
+      this.cpu.processors.forEach((processor: any, index: number) => {
+        let usage = this.calculateUsagePercentage(processor.usage);
+        // console.log(index, usage, processor);
+        this.dummyDatasets[index].data.push(usage);
+        // console.log(index, this.cpugraphdata.datasets[index].data.length);
+      });
+      this.cpugraphdata = {
+        labels,
+        datasets: this.dummyDatasets,
+      };
+
+      let dummyMemoryData = { ...this.memoryGraphData.datasets[0] };
+      dummyMemoryData.data.push(this.processMemoryUsage()["usedPercentage"]);
+      this.memoryGraphData = {
+        labels,
+        datasets: [dummyMemoryData],
+      };
+
+      // console.log("PUSHED NEW DATA", this.cpugraphdata);
+    },
+    initalizeCPUGraphData() {
+      let colors = [
+        "#FF9172",
+        "#386BD7",
+        "#42BAFE",
+        "#92B2F0",
+        "#D9D9D9",
+        "#0052CC",
+        "#FFFFFF",
+        "#C4C4C4",
+      ];
+      this.cpu.processors.forEach((processor: any, index: number) => {
+        const usage = processor["usage"];
+        let dataset = {
+          data: [],
+          label: "CPU" + index,
+          borderColor: colors[index % 8],
+          fill: false,
+          pointRadius: 0,
+          lineTension: 0,
+        };
+        this.dummyDatasets.push(dataset);
+      });
+      this.cpugraphdata.datasets = this.dummyDatasets;
+
+      this.memoryGraphData.datasets = [
+        {
+          data: [],
+          label: "Memory Usage",
+          borderColor: "#ffffff",
+          fill: false,
+          pointRadius: 0,
+          lineTension: 0,
+        },
+      ];
+    },
   },
   mounted() {
     setInterval(async () => {
@@ -112,8 +271,17 @@ export default Vue.extend({
       this.memory = data["memory"];
       this.storage = data["storage"];
       this.cpu = data["cpu"];
+      if (this.lastUpdated === null) {
+        this.initalizeCPUGraphData();
+      }
       this.lastUpdated = data["time"];
+      this.pushCPUData();
     }, this.interval);
+  },
+  watch: {
+    chartData() {
+      this.$data._chart.update();
+    },
   },
 });
 </script>
@@ -127,6 +295,14 @@ export default Vue.extend({
   display: flex;
   flex-direction: column;
 
+  &.cpu {
+    background-color: #141414;
+
+    .graph {
+      background-color: #2a2e32;
+    }
+  }
+
   .body {
     display: flex;
   }
@@ -138,6 +314,14 @@ export default Vue.extend({
   .graph {
     flex: 0 0 50%;
     background-color: #3664c4;
+    border-radius: 0.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-weight: lighter;
+    font-size: 2rem;
+    color: #555;
   }
 
   .heading {
