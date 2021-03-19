@@ -2,7 +2,7 @@
 
 This Progressive-Web-App along with the Chrome extension allows user to monitor telemetric data about the system.
 
-** :heavy_check_mark: Current Progress: All 3 milestones completed.**
+**:heavy_check_mark: Current Progress: All 3 milestones completed.**
 
 The code after each milestone can be found in the branch with name `milestone-#`.
 
